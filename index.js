@@ -31,21 +31,16 @@ async function generateToken() {
 }
 
 app.post('/', asyncExpress(async (req, res) => {
-  try {
-    const { commit, repoSlug, pullNumber, apkUrl } = req.body
-    const { data } = await axios.post(`https://api.github.com/repos/${repoSlug}/issues/${pullNumber}/comments`, {
-      body: `Download the built apk for \`${commit.slice(0, 7)}\` [here](${apkUrl}).`,
-    }, {
-      headers: {
-        Authorization: `token ${await generateToken()}`,
-        Accept: 'application/vnd.github.machine-man-preview+json',
-      },
-    })
-  } catch (err) {
-    console.log('catch the error', err)
-  } finally {
-    res.end()
-  }
+  const { commit, repoSlug, pullNumber, apkUrl } = req.body
+  const { data } = await axios.post(`https://api.github.com/repos/${repoSlug}/issues/${pullNumber}/comments`, {
+    body: `Download the built apk for \`${commit.slice(0, 7)}\` [here](${apkUrl}).`,
+  }, {
+    headers: {
+      Authorization: `token ${await generateToken()}`,
+      Accept: 'application/vnd.github.machine-man-preview+json',
+    },
+  })
+  res.end()
 }))
 
 module.exports = app
